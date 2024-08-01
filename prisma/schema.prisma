@@ -1,0 +1,34 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+model s_routes {
+  name           String?   @db.VarChar
+  from           String?   @db.VarChar(3)
+  stop           String?   @db.VarChar(3)
+  to             String?   @db.VarChar(3)
+  effective_date DateTime? @db.Date
+  id             Int       @id(map: "pk") @default(autoincrement())
+  uuid           String?   @db.VarChar
+  arr            Json[]    @db.Json
+}
+
+model session {
+  sid    String   @id @db.VarChar
+  sess   Json     @db.Json
+  expire DateTime @db.Timestamp(6)
+
+  @@index([expire], map: "IDX_session_expire")
+}
+
+model supplier {
+  name     String? @db.VarChar
+  password String? @db.VarChar
+  id       Int     @id(map: "id") @default(autoincrement())
+  company  String? @db.VarChar
+}
