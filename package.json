@@ -3,6 +3,7 @@
     "@adminjs/express": "^6.1.0",
     "@adminjs/prisma": "^5.0.3",
     "@adminjs/sql": "^2.2.6",
+    "@adminjs/upload": "^4.0.2",
     "adminjs": "^7.8.7",
     "body-parser": "^1.20.2",
     "connect-pg-simple": "^9.0.1",
@@ -10,6 +11,7 @@
     "express": "^4.19.2",
     "express-formidable": "^1.2.0",
     "express-session": "^1.18.0",
+    "multer": "^1.4.5-lts.1",
     "tslib": "^2.6.3"
   },
   "name": "adminjs",

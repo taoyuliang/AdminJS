@@ -13,6 +13,8 @@ import path from "path"
 import mFetch from "./routers/mFetch.js"
 import cors from "cors"
 import bodyparser from "body-parser"
+import uploadFeature from "@adminjs/upload"
+
 // const prisma = new PrismaClient()
 // process.env.NODE_ENV = "production"
 process.env.NODE_ENV = "development"
@@ -81,6 +83,66 @@ const start = async () => {
             // },
           },
         },
+      },
+      {
+        resource: { model: getModelByName("upload_file"), client: prisma },
+        options: {
+          properties: {
+            s3Key: {
+              type: "string",
+              isVisible: {
+                edit: false,
+                show: true,
+                list: true,
+                filter: true,
+              },
+            },
+            bucket: {
+              type: "string",
+              isVisible: {
+                edit: false,
+                show: true,
+                list: true,
+                filter: true,
+              },
+            },
+            mime: {
+              type: "string",
+              isVisible: {
+                edit: false,
+                show: true,
+                list: true,
+                filter: true,
+              },
+            },
+            comment: {
+              type: "textarea",
+              isSortable: false,
+            },
+          },
+        },
+        features: [
+          uploadFeature({
+            componentLoader,
+            provider: {
+              local: {
+                bucket: "public/files",
+                opts: {
+                  baseUrl: "/files",
+                },
+              },
+            },
+            properties: {
+              file: "file",
+              key: "s3Key",
+              bucket: "bucket",
+              mimeType: "mime",
+            },
+            validation: {
+              mimeTypes: ["image/png", "image/jpeg"],
+            },
+          }),
+        ],
       },
     ],
     dashboard: {

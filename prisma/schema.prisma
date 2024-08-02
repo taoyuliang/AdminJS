@@ -32,3 +32,11 @@ model supplier {
   id       Int     @id(map: "id") @default(autoincrement())
   company  String? @db.VarChar
 }
+
+model upload_file {
+  s3Key   String? @db.VarChar
+  bucket  String? @db.VarChar
+  mime    String? @db.VarChar
+  comment String?
+  id      Int     @id @default(autoincrement())
+}
