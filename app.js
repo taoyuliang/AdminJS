@@ -23,6 +23,8 @@ import {
   owningRelationSettingsFeature,
   targetRelationSettingsFeature,
 } from "@adminjs/relations"
+import argon2 from "argon2"
+import passwordsFeature from "@adminjs/passwords"
 // const prisma = new PrismaClient()
 // process.env.NODE_ENV = "production"
 process.env.NODE_ENV = "development"
@@ -63,6 +65,23 @@ const start = async () => {
   // }).init()
   const admin = new AdminJS({
     resources: [
+      {
+        resource: { model: getModelByName("User"), client: prisma },
+        options: {
+          //...your regular options go here'
+          properties: { password: { isVisible: false } },
+        },
+        features: [
+          passwordsFeature({
+            componentLoader,
+            properties: {
+              encryptedPassword: "password",
+              password: "newPassword",
+            },
+            hash: argon2.hash,
+          }),
+        ],
+      },
       {
         resource: { model: getModelByName("supplier"), client: prisma },
         options: { id: "supplier", titleProperty: "company" }, // Feature Log use titleProperty to show field "Record Title"

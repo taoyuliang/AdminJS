@@ -1,4 +1,6 @@
 AdminJS.UserComponents = {}
+import PasswordEditComponent from '../node_modules/@adminjs/passwords/build/components/PasswordEditComponent'
+AdminJS.UserComponents.PasswordEditComponent = PasswordEditComponent
 import RelationsShowPropertyComponent from '../node_modules/@adminjs/relations/lib/components/RelationsShowPropertyComponent'
 AdminJS.UserComponents.RelationsShowPropertyComponent = RelationsShowPropertyComponent
 import RelationsEditPropertyComponent from '../node_modules/@adminjs/relations/lib/components/RelationsEditPropertyComponent'

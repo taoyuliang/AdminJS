@@ -56,7 +56,8 @@ model Log {
 }
 
 model User {
-  id     Int     @id
-  userId String  @db.VarChar
-  email  String? @db.VarChar
+  id       Int     @id
+  userId   String  @db.VarChar
+  email    String? @db.VarChar
+  password String? @db.VarChar
 }
