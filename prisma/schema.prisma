@@ -40,3 +40,21 @@ model upload_file {
   comment String?
   id      Int     @id @default(autoincrement())
 }
+
+model Log {
+  id          Int      @id @default(autoincrement())
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+  recordId    Int
+  recordTitle String?  @db.VarChar(128)
+  difference  Json?    @db.Json
+  action      String   @db.VarChar(128)
+  resource    String   @db.VarChar(128)
+  userId      String   @db.VarChar(128)
+}
+
+model User {
+  id     Int     @id
+  userId String  @db.VarChar
+  email  String? @db.VarChar
+}

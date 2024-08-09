@@ -1,4 +1,8 @@
-import AdminJS from "adminjs"
+import AdminJS, {
+  ComponentLoader,
+  useCurrentAdmin,
+  DefaultAuthProvider,
+} from "adminjs"
 import AdminJSExpress from "@adminjs/express"
 import express from "express"
 import Connect from "connect-pg-simple"
@@ -7,14 +11,14 @@ import Plugin from "@adminjs/express"
 // import { Adapter, Database, Resource } from "@adminjs/sql"
 import { Database, Resource, getModelByName } from "@adminjs/prisma"
 import prisma from "./db.js"
-import { ComponentLoader } from "adminjs"
 import * as url from "url"
 import path from "path"
 import mFetch from "./routers/mFetch.js"
 import cors from "cors"
 import bodyparser from "body-parser"
 import uploadFeature from "@adminjs/upload"
-
+import loggerFeature, { createLoggerResource } from "@adminjs/logger"
+import importExportFeature from "@adminjs/import-export"
 // const prisma = new PrismaClient()
 // process.env.NODE_ENV = "production"
 process.env.NODE_ENV = "development"
@@ -29,13 +33,16 @@ AdminJS.registerAdapter({
 const PORT = 3000
 
 const DEFAULT_ADMIN = {
-  email: "admin@example.com",
+  email: "admin@splunk.com",
+  title: "PM",
+  // avatarUrl:"",
   password: "password",
+  id: "S_002",
 }
 
-const authenticate = async (email, password) => {
+const authenticate = async ({ email, password }, ctx) => {
   if (email === DEFAULT_ADMIN.email && password === DEFAULT_ADMIN.password) {
-    return Promise.resolve(DEFAULT_ADMIN)
+    return DEFAULT_ADMIN
   }
   return null
 }
@@ -50,7 +57,16 @@ const start = async () => {
     resources: [
       {
         resource: { model: getModelByName("supplier"), client: prisma },
-        options: { id: "supplier" },
+        options: { id: "supplier", titleProperty: "company" }, // Feature Log use titleProperty to show field "Record Title"
+        features: [
+          loggerFeature({
+            componentLoader,
+            propertiesMapping: {
+              user: "userId", // Save authenticate func's return obj's id to userId field of Entity Log
+            },
+            // userIdAttribute: "id", // Me: defaluts to "id"
+          }),
+        ],
       },
       {
         resource: { model: getModelByName("s_routes"), client: prisma },
@@ -83,6 +99,7 @@ const start = async () => {
             // },
           },
         },
+        features: [importExportFeature({ componentLoader })],
       },
       {
         resource: { model: getModelByName("upload_file"), client: prisma },
@@ -144,6 +161,24 @@ const start = async () => {
           }),
         ],
       },
+      {
+        ...createLoggerResource({
+          componentLoader: componentLoader,
+          resource: { model: getModelByName("Log"), client: prisma },
+          featureOptions: {
+            propertiesMapping: {
+              // userIdAttribute: "id", //authenticate function returned obj's id.
+              user: "userId", // user is field of Frontend UI, userId is field of Entity Log
+              resourceOptions: {
+                navigation: {
+                  name: "SectionName",
+                  icon: "iconName",
+                },
+              },
+            },
+          },
+        }),
+      },
     ],
     dashboard: {
       component: componentLoader.add("Dashboard", "./dashboard"),
@@ -186,11 +221,15 @@ const start = async () => {
     tableName: "session",
     createTableIfMissing: true,
   })
-
+  const authProvider = new DefaultAuthProvider({
+    componentLoader,
+    authenticate,
+  })
   const adminRouter = AdminJSExpress.buildAuthenticatedRouter(
     admin,
     {
-      authenticate,
+      // authenticate,
+      provider: authProvider,
       cookieName: "adminjs",
       cookiePassword: "sessionsecret",
     },

@@ -1,9 +1,12 @@
 {
   "dependencies": {
     "@adminjs/express": "^6.1.0",
+    "@adminjs/import-export": "^3.0.0",
+    "@adminjs/logger": "^5.0.1",
     "@adminjs/prisma": "^5.0.3",
     "@adminjs/sql": "^2.2.6",
     "@adminjs/upload": "^4.0.2",
+    "@prisma/client": "^5.18.0",
     "adminjs": "^7.8.7",
     "body-parser": "^1.20.2",
     "connect-pg-simple": "^9.0.1",
@@ -29,7 +32,7 @@
   "devDependencies": {
     "@types/cors": "^2.8.17",
     "@types/node": "^22.0.0",
-    "prisma": "^5.17.0",
+    "prisma": "^5.18.0",
     "typescript": "^5.5.4"
   }
 }
