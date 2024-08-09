@@ -4,6 +4,7 @@
     "@adminjs/import-export": "^3.0.0",
     "@adminjs/logger": "^5.0.1",
     "@adminjs/prisma": "^5.0.3",
+    "@adminjs/relations": "^1.1.2",
     "@adminjs/sql": "^2.2.6",
     "@adminjs/upload": "^4.0.2",
     "@prisma/client": "^5.18.0",

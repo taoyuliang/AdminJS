@@ -31,6 +31,7 @@ model supplier {
   password String? @db.VarChar
   id       Int     @id(map: "id") @default(autoincrement())
   company  String? @db.VarChar
+  Log      Log[]
 }
 
 model upload_file {
@@ -51,6 +52,7 @@ model Log {
   action      String   @db.VarChar(128)
   resource    String   @db.VarChar(128)
   userId      String   @db.VarChar(128)
+  supplier    supplier @relation(fields: [recordId], references: [id], onDelete: NoAction, onUpdate: NoAction)
 }
 
 model User {

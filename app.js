@@ -19,6 +19,10 @@ import bodyparser from "body-parser"
 import uploadFeature from "@adminjs/upload"
 import loggerFeature, { createLoggerResource } from "@adminjs/logger"
 import importExportFeature from "@adminjs/import-export"
+import {
+  owningRelationSettingsFeature,
+  targetRelationSettingsFeature,
+} from "@adminjs/relations"
 // const prisma = new PrismaClient()
 // process.env.NODE_ENV = "production"
 process.env.NODE_ENV = "development"
@@ -31,6 +35,10 @@ AdminJS.registerAdapter({
 })
 
 const PORT = 3000
+const RelationType = Object.freeze({
+  OneToMany: Symbol("one-to-many"), // Colors.RED.description
+  ManyToMany: Symbol("many-to-many"),
+})
 
 const DEFAULT_ADMIN = {
   email: "admin@splunk.com",
@@ -59,12 +67,25 @@ const start = async () => {
         resource: { model: getModelByName("supplier"), client: prisma },
         options: { id: "supplier", titleProperty: "company" }, // Feature Log use titleProperty to show field "Record Title"
         features: [
-          loggerFeature({
+          // loggerFeature({
+          //   componentLoader,
+          //   propertiesMapping: {
+          //     user: "userId", // Save authenticate func's return obj's id value to userId field of Entity Log
+          //   },
+          //   // userIdAttribute: "id", // Me: defaluts to "id"
+          // }),
+          owningRelationSettingsFeature({
             componentLoader,
-            propertiesMapping: {
-              user: "userId", // Save authenticate func's return obj's id to userId field of Entity Log
+            licenseKey: "Hacked and Recompiled",
+            relations: {
+              logs: {
+                type: RelationType.OneToMany.description,
+                target: {
+                  joinKey: "supplier",
+                  resourceId: "Log",
+                },
+              },
             },
-            // userIdAttribute: "id", // Me: defaluts to "id"
           }),
         ],
       },
@@ -162,19 +183,19 @@ const start = async () => {
         ],
       },
       {
+        features: [targetRelationSettingsFeature()],
         ...createLoggerResource({
           componentLoader: componentLoader,
           resource: { model: getModelByName("Log"), client: prisma },
           featureOptions: {
             propertiesMapping: {
-              // userIdAttribute: "id", //authenticate function returned obj's id.
-              user: "userId", // user is field of Frontend UI, userId is field of Entity Log
-              resourceOptions: {
-                navigation: {
-                  name: "SectionName",
-                  icon: "iconName",
-                },
-              },
+              user: "userId", // Mandatory, user is field of Frontend UI, userId is field of Entity Log
+              // resourceOptions: { // BUG,not working, have to manully do obj.options.navigation={name,icon}
+              //   navigation: {
+              //     name: "SectionName",
+              //     icon: "iconName",
+              //   },
+              // },
             },
           },
         }),
