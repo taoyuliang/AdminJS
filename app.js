@@ -13,7 +13,7 @@ import { Database, Resource, getModelByName } from "@adminjs/prisma"
 import prisma from "./db.js"
 import * as url from "url"
 import path from "path"
-import mFetch from "./routers/mFetch.js"
+import mRouter from "./routers/mRouter.js"
 import cors from "cors"
 import bodyparser from "body-parser"
 import uploadFeature from "@adminjs/upload"
@@ -229,23 +229,11 @@ const start = async () => {
       softwareBrothers: false,
       logo: false, // OR false to hide the default one
     },
+    // https://github.com/SoftwareBrothers/adminjs/blob/master/src/locale/en/translation.json
     locale: {
-      language: "en",
-      translations: {
-        labels: {
-          // navigation: "Навигација",
-          // pages: "Страници",
-          // selectedRecords: "Избрано ({{selected}})",
-          // filters: "Филтри",
-          // adminVersion: "Администратор: {{version}}",
-          // appVersion: "Апликација: {{version}}",
-          loginWelcome: "A Big Welcome !",
-          // dashboard: "Контролна табла",
-        },
-        messages: {
-          loginWelcome: "A Big Welcome !!",
-        },
-      },
+      // language: "en",
+      localeDetection: true,
+      withBackend: true,
     },
     // assets: {
     // styles: ["/styles.css"],
@@ -273,7 +261,7 @@ const start = async () => {
       cookieName: "adminjs",
       cookiePassword: "sessionsecret",
     },
-    mFetch, // Custom Routers
+    mRouter, // Custom Routers
     {
       store: sessionStore,
       resave: true,
