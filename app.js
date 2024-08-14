@@ -25,10 +25,8 @@ import {
 } from "@adminjs/relations"
 import argon2 from "argon2"
 import passwordsFeature from "@adminjs/passwords"
-// const prisma = new PrismaClient()
+
 // process.env.NODE_ENV = "production"
-process.env.NODE_ENV = "development"
-// console.log(process.env.NODE_ENV === "production")
 const __dirname = url.fileURLToPath(new URL(".", import.meta.url))
 const componentLoader = new ComponentLoader()
 AdminJS.registerAdapter({
@@ -231,9 +229,10 @@ const start = async () => {
     },
     // https://github.com/SoftwareBrothers/adminjs/blob/master/src/locale/en/translation.json
     locale: {
-      // language: "en",
+      language: "en", // Default
       localeDetection: true,
-      withBackend: true,
+      // withBackend: true,
+      debug: false, // Disable console.log warnings
     },
     // assets: {
     // styles: ["/styles.css"],
