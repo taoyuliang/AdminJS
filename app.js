@@ -207,12 +207,13 @@ const start = async () => {
           featureOptions: {
             propertiesMapping: {
               user: "userId", // Mandatory, user is field of Frontend UI, userId is field of Entity Log
-              // resourceOptions: { // BUG,not working, have to manully do obj.options.navigation={name,icon}
-              //   navigation: {
-              //     name: "SectionName",
-              //     icon: "iconName",
-              //   },
-              // },
+            },
+            resourceOptions: {
+              navigation: {
+                name: "Audit",
+                //https://storybook.adminjs.co/?path=/docs/designsystem-atoms-icon--docs
+                icon: "Target",
+              },
             },
           },
         }),
