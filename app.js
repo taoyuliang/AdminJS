@@ -26,7 +26,6 @@ import {
 import argon2 from "argon2"
 import passwordsFeature from "@adminjs/passwords"
 
-// process.env.NODE_ENV = "production"
 const __dirname = url.fileURLToPath(new URL(".", import.meta.url))
 const componentLoader = new ComponentLoader()
 AdminJS.registerAdapter({

@@ -1,14 +1,13 @@
 import puppeteer from "puppeteer-core"
 ;(async () => {
+  const browser = await puppeteer.launch({
+    executablePath:
+      "/Applications/Google Chrome.app/Contents/MacOS/Google Chrome",
+    headless: false,
+    userDataDir: "/Users/anthony/Library/Application Support/Google/Chrome",
+    // devtools: true, // Client Side debugger method
+  })
   try {
-    const browser = await puppeteer.launch({
-      executablePath:
-        "/Applications/Google Chrome.app/Contents/MacOS/Google Chrome",
-      headless: false,
-      // userDataDir: "/Users/anthony/Library/Application Support/Google/Chrome",
-      // devtools: true, // Client Side debugger method
-    })
-
     // Connect to a remote browser
     // const browser = await puppeteer.connect({
     //   browserWSEndpoint:
@@ -16,22 +15,29 @@ import puppeteer from "puppeteer-core"
     // })
 
     // Create a page
-    const page = await browser.newPage()
-    page.on("console", (msg) => console.log("PAGE LOG:", msg.text()))
+    // const page = await browser.newPage()
+    const pages = await browser.pages()
+    const page = pages[0]
+    page.on("console", (msg) => {
+      console.log("Console Event: ", msg.text())
+    })
     debugger // Server Side debugger method, iTerm2: /Applications/Google\ Chrome.app/Contents/MacOS/Google\ Chrome --remote-debugging-port=9222 & node --inspect-brk your.js
     // Go to your site
     await page.goto("https://www.feeair.com/rates.html")
 
     await page.setViewport({ width: 1080, height: 1000 })
-    await new Promise((resolve) => setTimeout(resolve, 10000)) // Manually login account
+    // await new Promise((resolve) => setTimeout(resolve, 10000)) // Manually login account
+
+    // Query without waiting: page.$(),page.$$(),page.$eval(),page.$$eval()
     page.$eval("body", (element) => {
       // debugger // Client Side debugger method
-      console.log("Hi Puppeteer")
+      console.log("Hi Puppeteer!")
     })
 
-    // Close browser.
-    //   await browser.close()
+    //Logic goes here
   } catch (e) {
     console.log(e)
+  } finally {
+    // await browser.close()
   }
 })()
