@@ -1,7 +1,7 @@
 import express, { response } from "express"
-import prisma from "../db.js"
+import prisma from "../_db.js"
 import multer from "multer"
-import * as fs from "fs"
+import * as fs from "node:fs/promises"
 import path from "path"
 import * as url from "url"
 
@@ -53,5 +53,18 @@ router.post(
     }
   }
 )
+
+// puppeteer
+router.post("/puppeteer", async (req, res) => {
+  try {
+    await fs.appendFile(
+      path.join(__dirname, "../public/puppeteer.txt"),
+      req.body
+    )
+    res.send({ ok: true })
+  } catch (e) {
+    console.error(e)
+  }
+})
 
 export default router

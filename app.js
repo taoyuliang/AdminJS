@@ -10,7 +10,7 @@ import session from "express-session"
 import Plugin from "@adminjs/express"
 // import { Adapter, Database, Resource } from "@adminjs/sql"
 import { Database, Resource, getModelByName } from "@adminjs/prisma"
-import prisma from "./db.js"
+import prisma from "./_db.js"
 import * as url from "url"
 import path from "path"
 import mRouter from "./routers/mRouter.js"
@@ -275,6 +275,8 @@ const start = async () => {
   )
   app.use(cors())
   app.use(bodyparser.json())
+  // prettier-ignore
+  app.use(bodyparser.text({type: "text/plain"}))
   app.use(express.static(path.join(__dirname, "./public")))
   app.use(admin.options.rootPath, adminRouter)
   app.listen(PORT, () => {
