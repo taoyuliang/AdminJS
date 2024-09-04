@@ -1,8 +1,8 @@
 import puppeteer from "puppeteer-core"
-import CryptoJS from "crypto-js"
-import IATA from "./DummyIATA.js"
-// import IATA from "./IATA.js"
-import * as fs from "fs"
+// import CryptoJS from "crypto-js"
+// import IATA from "./DummyIATA.js"
+import IATA from "./IATA.js"
+// import * as fs from "fs"
 ;(async () => {
   const browser = await puppeteer.launch({
     executablePath:
@@ -64,7 +64,7 @@ import * as fs from "fs"
     //   url: "https://code.jquery.com/jquery-3.2.1.min.js",
     // })
     await page.setViewport({ width: 1080, height: 1000 })
-    await new Promise((resolve) => setTimeout(resolve, 2000)) // Manually login account
+    await new Promise((resolve) => setTimeout(resolve, 20000)) // Manually login account
 
     /*Query without waiting: 
     page.$()
@@ -75,7 +75,7 @@ import * as fs from "fs"
     page.$eval("body", (element) => {
       // debugger // Client Side debugger method
       console.log(
-        $ ? "Hi Puppeteer with JQuery" : "Hi Puppeteer without JQuery"
+        $.isReady ? "Hi Puppeteer with JQuery" : "Hi Puppeteer without JQuery"
       )
     })
 
@@ -114,7 +114,7 @@ import * as fs from "fs"
           page.waitForNavigation(), // The promise resolves after navigation has finished
           page.locator("input.btn").click(),
         ])
-        await new Promise((resolve) => setTimeout(resolve, 3000))
+        await new Promise((resolve) => setTimeout(resolve, 1500))
         let ret = await page.evaluate(() => {
           let retData = ""
           if (
@@ -144,17 +144,29 @@ import * as fs from "fs"
                 rates = Array.from({ length: rates.length / 2 }, (el, idx) => {
                   return "\n" + rates[2 * idx] + rates[2 * idx + 1]
                 })
+                // debugger
                 let ratesArr = rates.map((i) => {
                   const tmp = i.split(/\n/).filter((i) => !i == false)
                   let obj = {}
-                  obj["type"] = tmp[0]
-                  obj["ratio"] = tmp[1]
-                  obj["45"] = tmp[2].slice(1)
-                  obj["100"] = tmp[3].slice(1)
-                  obj["300"] = tmp[4].slice(1)
-                  obj["500"] = tmp[5].slice(1)
-                  obj["1000"] = tmp[6].slice(1)
-                  return obj
+                  if (tmp[1].startsWith("1:")) {
+                    obj["type"] = tmp[0]
+                    obj["ratio"] = tmp[1]
+                    obj["45"] = tmp[2].slice(1) || 0
+                    obj["100"] = tmp[3].slice(1) || 0
+                    obj["300"] = tmp[4].slice(1) || 0
+                    obj["500"] = tmp[5].slice(1) || 0
+                    obj["1000"] = tmp[6].slice(1) || 0
+                    return obj
+                  } else {
+                    obj["type"] = tmp[0]
+                    obj["ratio"] = "no ratio"
+                    obj["45"] = tmp[1].slice(1) || 0
+                    obj["100"] = tmp[2].slice(1) || 0
+                    obj["300"] = tmp[3].slice(1) || 0
+                    obj["500"] = tmp[4].slice(1) || 0
+                    obj["1000"] = tmp[5].slice(1) || 0
+                    return obj
+                  }
                 })
                 // ratesArr = [...new Set(ratesArr)] // Dedup
                 retData += JSON.stringify({ route, ratesArr }) + "\n"
@@ -178,6 +190,6 @@ import * as fs from "fs"
   } catch (e) {
     console.log(e)
   } finally {
-    // await browser.close()
+    await browser.close()
   }
 })()

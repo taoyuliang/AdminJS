@@ -1,0 +1,34 @@
+{
+  "inbounds": [
+    {
+      "port": 10088,
+      "protocol": "vmess",
+      "settings": {
+        "clients": [
+          {
+            "id": "f502b6bc-49ed-47ac-8de2-049e5b6e883c"
+          }
+        ],
+        "detour": {
+          "to": "dynamicPort"
+        }
+      }
+    },
+    {
+      "protocol": "vmess",
+      "port": "10000-20000",
+      "tag": "dynamicPort",
+      "allocate": {
+        "strategy": "random",
+        "concurrency": 2,
+        "refresh": 360
+      }
+    }
+  ],
+  "outbounds": [
+    {
+      "protocol": "freedom",
+      "settings": {}
+    }
+  ]
+}
