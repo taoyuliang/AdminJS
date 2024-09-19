@@ -19,33 +19,8 @@ import IATA from "./IATA.js"
     //     "ws://127.0.0.1:9222/devtools/browser/06e098d7-303c-4f32-9bdb-8dddd4a41c89",
     // })
     console.log("IATA", IATA) // Array
-    const START = [
-      "PVG",
-      "SHA",
-      "NKG",
-      "HGH",
-      "HFE",
-      "WUH",
-      "EHU",
-      "KHN",
-      "FOC",
-      "NGB",
-      "XMN",
-      "CAN",
-      "SZX",
-      "CSX",
-      "CKG",
-      "KMG",
-      "NNG",
-      "CTU",
-      "TFU",
-      "XIY",
-      "CGO",
-      "TAO",
-      "PEK",
-      "TSN",
-      "DLC",
-    ]
+    // prettier-ignore
+    const START = ["PVG","SHA","NKG","HGH","HFE","WUH","EHU","KHN","FOC","NGB","XMN","CAN","SZX","CSX","CKG","KMG","NNG","CTU","TFU","XIY","CGO","TAO","PEK","TSN","DLC",]
     const pages = await browser.pages() // const page = await browser.newPage()
     const page = pages[0]
     page.on("console", (msg) => {
