@@ -199,7 +199,6 @@ const start = async () => {
         ],
       },
       {
-        features: [targetRelationSettingsFeature()],
         ...createLoggerResource({
           componentLoader: componentLoader,
           resource: { model: getModelByName("Log"), client: prisma },
@@ -216,6 +215,7 @@ const start = async () => {
             },
           },
         }),
+        features: [targetRelationSettingsFeature()],
       },
     ],
     dashboard: {
@@ -243,6 +243,7 @@ const start = async () => {
   const sessionStore = new ConnectSession({
     conObject: {
       connectionString: "postgres://adminjs:changeme@localhost:5432/adminjs",
+      // connectionString: "postgres://adminjs:Cocktail1007@pgm-uf6u905h6ky30pf6xo.pg.rds.aliyuncs.com/adminjs?schema=public",
       ssl: process.env.NODE_ENV === "production",
     },
     tableName: "session",
@@ -273,10 +274,10 @@ const start = async () => {
       name: "adminjs",
     }
   )
-  app.use(cors())
-  app.use(bodyparser.json())
+  app.use(bodyparser.json()) // bodyparser only for POST request
   // prettier-ignore
   app.use(bodyparser.text({type: "text/plain"}))
+  app.use(cors())
   app.use(express.static(path.join(__dirname, "./public")))
   app.use(admin.options.rootPath, adminRouter)
   app.listen(PORT, () => {
