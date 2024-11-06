@@ -1,0 +1,14 @@
+{
+  "messages": {
+    "welcomeOnBoard_title": "Hello World2"
+  },
+  "components": {
+    "Login": {
+      "welcomeHeader": "Welcome Peach",
+      "welcomeMessage": "Welcome to the Playgroud"
+    }
+  },
+  "labels": {
+    "prisma": "prisma"
+  }
+}
