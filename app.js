@@ -83,7 +83,7 @@ const start = async () => {
         resource: { model: getModelByName("supplier"), client: prisma },
         options: { id: "supplier", titleProperty: "company" }, // Feature Log use titleProperty to show field "Record Title"
         features: [
-          // loggerFeature({
+          // loggerFeature({ // Put loggerFeature here if wants to audit 'supplier' resource
           //   componentLoader,
           //   propertiesMapping: {
           //     user: "userId", // Save authenticate func's return obj's id value to userId field of Entity Log

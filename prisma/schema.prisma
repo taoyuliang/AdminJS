@@ -10,12 +10,16 @@ datasource db {
 model s_routes {
   name           String?   @db.VarChar
   from           String?   @db.VarChar(3)
-  stop           String?   @db.VarChar(3)
+  stop           String?   @db.VarChar
   to             String?   @db.VarChar(3)
-  effective_date DateTime? @db.Date
+  effective_date DateTime? @default(dbgenerated("'2024-11-01'::date")) @db.Date
   id             Int       @id(map: "pk") @default(autoincrement())
   uuid           String?   @db.VarChar
-  arr            Json[]    @db.Json
+  ratesArr       Json[]    @db.Json
+  airline        String?   @db.VarChar
+  schedule_date  String?   @db.VarChar
+  from_name      String?   @db.VarChar
+  to_name        String?   @db.VarChar
 }
 
 model session {

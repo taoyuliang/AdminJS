@@ -18,16 +18,32 @@ const storage = multer.diskStorage({
 const upload = multer({ storage: storage })
 const router = express.Router()
 // GET /admin/getItems    alice?searchProperty=name
-router.get("/get_items", async (req, res) => {
+router.get("/items", async (req, res) => {
   try {
     const response = await global.prismaGlobal.supplier.findMany()
+    res.send(response)
+  } catch (e) {
+    console.error(e)
+  }
+})
+
+router.get("/s_routes", async (req, res) => {
+  try {
+    console.log(req)
+    const response = await global.prismaGlobal.s_routes.findMany({
+      // With GET request, the URL parameters are not part of the body, and thus will not be parsed by the bodyParser middleware.
+      where: {
+        from: req.query.from,
+        to: req.query.to,
+      },
+    })
     res.send(response)
   } catch (e) {
     console.error("e")
   }
 })
 
-router.post("/post_items", async (req, res) => {
+router.post("/items", async (req, res) => {
   try {
     const response = await global.prismaGlobal.s_routes.createMany({
       data: req.body.items,
@@ -35,7 +51,7 @@ router.post("/post_items", async (req, res) => {
     })
     res.send(response)
   } catch (e) {
-    console.error("e")
+    console.error(e)
   }
 })
 
