@@ -1,4 +1,6 @@
 AdminJS.UserComponents = {}
+import LeafletMultipleMarkersMapPropertyComponent from '../node_modules/@adminjs/leaflet/lib/components/LeafletMultipleMarkersMapPropertyComponent'
+AdminJS.UserComponents.LeafletMultipleMarkersMapPropertyComponent = LeafletMultipleMarkersMapPropertyComponent
 import PasswordEditComponent from '../node_modules/@adminjs/passwords/build/components/PasswordEditComponent'
 AdminJS.UserComponents.PasswordEditComponent = PasswordEditComponent
 import RelationsShowPropertyComponent from '../node_modules/@adminjs/relations/lib/components/RelationsShowPropertyComponent'

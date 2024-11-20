@@ -7,6 +7,44 @@ datasource db {
   url      = env("DATABASE_URL")
 }
 
+model Log {
+  id          Int      @id @default(autoincrement())
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime
+  recordId    Int
+  recordTitle String?  @db.VarChar(128)
+  difference  Json?    @db.Json
+  action      String   @db.VarChar(128)
+  resource    String   @db.VarChar(128)
+  userId      String   @db.VarChar(128)
+  supplier    supplier @relation(fields: [recordId], references: [id], onDelete: NoAction, onUpdate: NoAction)
+}
+
+model User {
+  id       Int     @id
+  userId   String  @db.VarChar
+  email    String? @db.VarChar
+  password String? @db.VarChar
+}
+
+model maps {
+  id      BigInt    @id(map: "PK_dddaabaf432b881f9f6e13bf9bd") @default(autoincrement())
+  name    String    @db.VarChar(60)
+  markers markers[]
+}
+
+model markers {
+  id        BigInt                   @id(map: "PK_05eb83870b9b88db9d4e949965c") @default(autoincrement())
+  name      String                   @db.VarChar(60)
+  map_id    BigInt?
+  location2 Unsupported("geography")
+  location  Json?                    @default(dbgenerated("(st_asgeojson(location2))::json")) @db.Json
+  maps      maps?                    @relation(fields: [map_id], references: [id], onUpdate: NoAction, map: "FK_d41685ccfdacf01c9be1e955105")
+
+  @@index([location2], map: "IDX_ac07a7a14b21f94b434b2c0f5e", type: Gist)
+  @@index([map_id], map: "IDX_d41685ccfdacf01c9be1e95510")
+}
+
 model s_routes {
   name           String?   @db.VarChar
   from           String?   @db.VarChar(3)
@@ -30,6 +68,15 @@ model session {
   @@index([expire], map: "IDX_session_expire")
 }
 
+/// This table contains check constraints and requires additional setup for migrations. Visit https://pris.ly/d/check-constraints for more info.
+model spatial_ref_sys {
+  srid      Int     @id
+  auth_name String? @db.VarChar(256)
+  auth_srid Int?
+  srtext    String? @db.VarChar(2048)
+  proj4text String? @db.VarChar(2048)
+}
+
 model supplier {
   name     String? @db.VarChar
   password String? @db.VarChar
@@ -44,24 +91,4 @@ model upload_file {
   mime    String? @db.VarChar
   comment String?
   id      Int     @id @default(autoincrement())
-}
-
-model Log {
-  id          Int      @id @default(autoincrement())
-  createdAt   DateTime @default(now())
-  updatedAt   DateTime @updatedAt
-  recordId    Int
-  recordTitle String?  @db.VarChar(128)
-  difference  Json?    @db.Json
-  action      String   @db.VarChar(128)
-  resource    String   @db.VarChar(128)
-  userId      String   @db.VarChar(128)
-  supplier    supplier @relation(fields: [recordId], references: [id], onDelete: NoAction, onUpdate: NoAction)
-}
-
-model User {
-  id       Int     @id
-  userId   String  @db.VarChar
-  email    String? @db.VarChar
-  password String? @db.VarChar
 }

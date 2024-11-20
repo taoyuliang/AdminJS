@@ -25,6 +25,12 @@ import {
 } from "@adminjs/relations"
 import argon2 from "argon2"
 import passwordsFeature from "@adminjs/passwords"
+import leafletFeatures, { getLeafletDist } from "@adminjs/leaflet"
+
+BigInt.prototype.toJSON = function () {
+  const int = Number.parseInt(this.toString())
+  return int ?? this.toString()
+}
 
 const __dirname = url.fileURLToPath(new URL(".", import.meta.url))
 const componentLoader = new ComponentLoader()
@@ -62,6 +68,75 @@ const start = async () => {
   // }).init()
   const admin = new AdminJS({
     resources: [
+      {
+        resource: { model: getModelByName("markers"), client: prisma },
+        // options: {
+        //   id: "markers",
+        // },
+      },
+      {
+        resource: { model: getModelByName("maps"), client: prisma },
+        features: [
+          leafletFeatures.leafletMultipleMarkersMapFeature({
+            /* You must provide your "componentLoader" instance for the feature
+            to add it's components. */
+            componentLoader,
+            /* Since Map and Marker are in 1:M relation, a property to display the map
+            will not be present by default and the feature has to create one.
+            In this example, "mapProperty" creates a new "markers" field in your Map's "edit"
+            and "show" views. */
+            mapProperty: "iata markers",
+            /* "markerOptions" are required for the feature to know where to get and how to manage
+            your markers. Please note that "edit", "new" and "list" actions have to be enabled in your
+            Marker resource. */
+            markerOptions: {
+              /* Your marker's resource ID. This is usually either the model name or a table name
+              of your Marker unless you'd changed it. */
+              resourceId: "markers",
+              /* The foreign key in your Marker model which associates it with currently managed Map */
+              foreignKey: "maps", //weird...it is not "map_id", maybe use prisma and typeorm to generate
+              /* This configuration is exactly the same as "paths" configuration
+              in "leafletSingleMarkerMapFeature" */
+              paths: {
+                /* A property which should be used to display the map. It can be an entirely
+                new property name, or you can use an actual field from your Marker's model. */
+                mapProperty: "mLocation",
+                /* "jsonProperty" is optional and should only be given if your Marker's latitude
+                and longitude are stored in a single JSON field. In this example, "location"
+                is of GeoJSON.Point type (https://geojson.org/). If your latitude and longitude
+                are stored in separate fields, leave this option undefined. */
+                jsonProperty: "location", // Postgres workroud: create a field which converts geometry type to json type!
+                /* If your latitude has a separate field in your model, just use the field name.
+                Example:
+                  latitudeProperty: 'latitude'
+                If your latitude property is a part of a JSON structure (GeoJSON example from above)
+                you must provide a flattened path under which the latitude should be saved in the JSON. */
+                latitudeProperty: "location.coordinates.0",
+                /* Longitude configuration is the same as latitude's */
+                longitudeProperty: "location.coordinates.1",
+                /* 'location.coordinates.0' combined with 'location.coordinates.1' will save the
+                coordinates in the following format: { coordinates: [<lat>, <lng>] } */
+              },
+            },
+            /* "mapProps" are passed to React Leaflet's MapContainer component. You can use them to
+            change initial zoom, initial coordinates, max zoom, map bounds, disable scroll zoom, etc.
+            Reference: https://react-leaflet.js.org/docs/v3/api-map/ */
+            mapProps: {
+              /* In "leafletSingleMarkerMapFeature" the map is centered at your marker by default.
+              In "leafletMultipleMarkersMapFeature" the markers are fetched asynchronously and the map
+              is rendered before they're available so you must provide initial coordinates yourself.
+              By default, if you don't provide "center", the map will be centered at London coordinates.
+
+              Future versions of "@adminjs/leaflet" should have better handling of initial coordinates. */
+              center: [52.237049, 21.017532],
+            },
+            /* "tileProps" are passed to React Leaflet's TileLayer component. You can use them
+            to provide your custom tile URL, attribution, etc.
+            Reference: https://react-leaflet.js.org/docs/v3/api-components/#tilelayer */
+            tileProps: undefined,
+          }),
+        ],
+      },
       {
         resource: { model: getModelByName("User"), client: prisma },
         options: {
@@ -234,9 +309,9 @@ const start = async () => {
       // withBackend: true,
       debug: false, // Disable console.log warnings
     },
-    // assets: {
-    // styles: ["/styles.css"],
-    // },
+    assets: {
+      styles: ["/leaflet.css"],
+    },
   })
   admin.watch()
   const ConnectSession = Connect(session)
@@ -278,7 +353,8 @@ const start = async () => {
   // prettier-ignore
   app.use(bodyparser.text({type: "text/plain"}))
   app.use(cors())
-  app.use(express.static(path.join(__dirname, "./public")))
+  app.use(express.static(getLeafletDist()))
+  // app.use(express.static(path.join(__dirname, "./public")))
   app.use(admin.options.rootPath, adminRouter)
   app.listen(PORT, () => {
     console.log(
