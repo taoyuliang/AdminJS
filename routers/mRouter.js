@@ -23,13 +23,12 @@ router.get("/items", async (req, res) => {
     const response = await global.prismaGlobal.supplier.findMany()
     res.send(response)
   } catch (e) {
-    console.error(e)
+    console.error("e")
   }
 })
 
 router.get("/s_routes", async (req, res) => {
   try {
-    console.log(req)
     const response = await global.prismaGlobal.s_routes.findMany({
       // With GET request, the URL parameters are not part of the body, and thus will not be parsed by the bodyParser middleware.
       where: {
@@ -51,7 +50,7 @@ router.post("/items", async (req, res) => {
     })
     res.send(response)
   } catch (e) {
-    console.error(e)
+    console.error("e")
   }
 })
 
@@ -79,7 +78,7 @@ router.post("/puppeteer", async (req, res) => {
     )
     res.send({ ok: true })
   } catch (e) {
-    console.error(e)
+    console.error("e")
   }
 })
 

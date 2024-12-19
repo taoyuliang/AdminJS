@@ -185,24 +185,24 @@ const start = async () => {
         options: {
           id: "s_routes",
           properties: {
-            arr: { isArray: true, isDraggable: false, type: "mixed" },
-            "arr.ratio": {
-              type: "string", // PostgreSQL text
+            ratesArr: { isArray: true, isDraggable: false, type: "mixed" },
+            "ratesArr.ratio": {
+              type: "string", // PostgreSQL text; number for ostgreSQL numeric
             },
-            "arr.r45": {
-              type: "number", // PostgreSQL numeric
+            "ratesArr.r45": {
+              type: "string",
             },
-            "arr.r100": {
-              type: "number",
+            "ratesArr.r100": {
+              type: "string",
             },
-            "arr.r300": {
-              type: "number",
+            "ratesArr.r300": {
+              type: "string",
             },
-            "arr.r500": {
-              type: "number",
+            "ratesArr.r500": {
+              type: "string",
             },
-            "arr.r1000": {
-              type: "number",
+            "ratesArr.r1000": {
+              type: "string",
             },
             // Example from Documentation
             // "photoImage.tags": {
