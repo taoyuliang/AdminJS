@@ -161,9 +161,9 @@ const start = async () => {
           // loggerFeature({ // Put loggerFeature here if wants to audit 'supplier' resource
           //   componentLoader,
           //   propertiesMapping: {
-          //     user: "userId", // Save authenticate func's return obj's id value to userId field of Entity Log
+          //     user: "userId", // Save authenticate func's return obj's id value(have to enable authorization before using this feature) to Entity Log's userId field which holds reference to user who made changes
           //   },
-          //   // userIdAttribute: "id", // Me: defaluts to "id"
+          //   userIdAttribute: "id", //primary key currently logged user
           // }),
           owningRelationSettingsFeature({
             componentLoader,
@@ -184,6 +184,14 @@ const start = async () => {
         resource: { model: getModelByName("s_routes"), client: prisma },
         options: {
           id: "s_routes",
+          listProperties: [
+            "name",
+            "from",
+            "stop",
+            "to",
+            "airline",
+            "effective_date",
+          ],
           properties: {
             ratesArr: { isArray: true, isDraggable: false, type: "mixed" },
             "ratesArr.ratio": {
@@ -313,7 +321,7 @@ const start = async () => {
       styles: ["/leaflet.css"],
     },
   })
-  admin.watch()
+
   const ConnectSession = Connect(session)
   const sessionStore = new ConnectSession({
     conObject: {
@@ -349,6 +357,7 @@ const start = async () => {
       name: "adminjs",
     }
   )
+  admin.watch() // watch for changes via AdminJS.bundle() method AND only for development mode
   app.use(bodyparser.json()) // bodyparser only for POST request
   // prettier-ignore
   app.use(bodyparser.text({type: "text/plain"}))
