@@ -13,7 +13,12 @@ const client = new Client({
   connectionString,
 })
 
-await client.connect()
+/* Top level await is not supported in Node.js yet, so we have to wrap our code in an async function.
+What is it: Any modules that include this module will wait for the fetch to resolve before running any code,
+const colors = fetch("../data/colors.json").then((response) => response.json());
+export default await colors;
+*/
+await client.connect() // TODO: wrap await to async function
 
 let lineReader = readline.createInterface({
   input: fs.createReadStream(`${__dirname}/public/puppeteer.txt`),
@@ -28,6 +33,7 @@ lineReader.on("close", function () {
 // let n = 0
 
 for await (const line of lineReader) {
+  // TODO: wrap await to async function
   //   n++
   //   if (n == 3) process.exit(1)
   let item = JSON.parse(line)

@@ -197,6 +197,9 @@ const start = async () => {
             "ratesArr.ratio": {
               type: "string", // PostgreSQL text; number for ostgreSQL numeric
             },
+            "ratesArr.type": {
+              type: "string",
+            },
             "ratesArr.r45": {
               type: "string",
             },

@@ -58,6 +58,7 @@ model s_routes {
   schedule_date  String?   @db.VarChar
   from_name      String?   @db.VarChar
   to_name        String?   @db.VarChar
+  iata_code      String?   @default(dbgenerated("SUBSTRING(airline FROM 1 FOR 2)")) @db.VarChar(2)
 }
 
 model session {
